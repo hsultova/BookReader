@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using BookReader.Data.Repositories;
+using Microsoft.AspNetCore.Http;
+using System;
 
 namespace BookReader.Web
 {
@@ -50,6 +52,17 @@ namespace BookReader.Web
 			{
 				app.UseExceptionHandler("/Home/Error");
 			}
+
+			app.UseCookieAuthentication(new CookieAuthenticationOptions
+			{
+				AuthenticationScheme = "Cookies",
+				CookieName = ".BookReaderAuth",
+				ExpireTimeSpan = TimeSpan.FromDays(60),
+				LoginPath = new PathString("/User/Login"),
+				AccessDeniedPath = new PathString("/Home/Forbidden"),
+				AutomaticAuthenticate = true,
+				AutomaticChallenge = true
+			});
 
 			app.UseStaticFiles();
 

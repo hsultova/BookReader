@@ -16,6 +16,14 @@ namespace BookReader.Data.Models
 
 		public int RoleId { get; set; }
 
+		public string FullName
+		{
+			get
+			{
+				return Firstname + " " + Lastname;
+			}
+		}
+
 		[ForeignKey("RoleId")]
 		public Role Role { get; set; }
 	}

@@ -252,3 +252,4 @@ paket-files/
 *.sln.iml
 
 /BookReader/BookReader.Web/appsettings.local.json
+/BookReader/BookReader.Database/BookReader.Database.jfm
