@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BookReader.Data.Repositories;
 using Microsoft.AspNetCore.Http;
 using System;
+using BookReader.Web.Helpers;
 
 namespace BookReader.Web
 {
@@ -35,6 +36,11 @@ namespace BookReader.Web
 
 			// Add framework services.
 			services.AddMvc();
+
+			services.AddAuthorization(options =>
+			{
+				options.AddPolicy(BookReaderPolicies.AdminPolicy, policy => policy.RequireRole(BookReaderRoles.Admin));
+			});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

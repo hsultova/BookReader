@@ -1,22 +1,128 @@
-﻿@model BookReader.Web.ViewModels.LoginViewModel
+﻿@model BookReader.Web.ViewModels.LoginRegisterViewModel
 
-<div class="content">
-	<div class="form-title">
-		<h2>Login</h2>
+<link href="~/css/login.css" asp-append-version="true" rel="stylesheet" />
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<div class="panel panel-login">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col-xs-6">
+							<a href="#" class="active" id="login-form-link">Login</a>
+						</div>
+						<div class="col-xs-6">
+							<a href="#" id="register-form-link">Register</a>
+						</div>
+					</div>
+					<hr>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<form id="login-form" asp-controller="User" asp-action="Login" method="post" role="form">
+								<div class="form-group">
+									@Html.TextBoxFor(model => model.LoginViewModel.Email, new { @class = "form-control", @placeholder="Email", @type="email"})
+									@Html.ValidationMessageFor(model => model.LoginViewModel.Email, null, new { @class = "text-danger" })
+								</div>
+								<div class="form-group">
+									@Html.TextBoxFor(model => model.LoginViewModel.Password, new { @class = "form-control", @placeholder = "Password", @type = "password"})
+									@Html.ValidationMessageFor(model => model.LoginViewModel.Password, null, new { @class = "text-danger" })
+									@Html.ValidationMessage("InvalidLogin", null, new { @class = "text-danger" })
+								</div>
+								<div class="form-group">
+									<div class="row">
+										<div class="col-sm-6 col-sm-offset-3">
+											<button type="submit" class="form-control btn btn-login">Login</button>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="row">
+										<div class="col-lg-12">
+											<div class="text-center">
+												<a href="#" class="forgot-password">Forgot Password?</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+							<form id="register-form" asp-controller="User" asp-action="Register" method="post" style="display: none;">
+								<div class="form-group">
+									@Html.LabelFor(model => model.RegisterViewModel.Email, new { @class = "col-md-3" })
+									@Html.TextBoxFor(model => model.RegisterViewModel.Email, new { @class = "form-control" })
+									@Html.ValidationMessageFor(model => model.RegisterViewModel.Email, null, new { @class = "text-danger" })
+									@Html.ValidationMessage("ExistentEmail", null, new { @class = "text-danger" })
+								</div>
+								<div class="form-group">
+									@Html.LabelFor(model => model.RegisterViewModel.Password, new { @class = "col-md-3" })
+									@Html.TextBoxFor(model => model.RegisterViewModel.Password, new { @class = "form-control", @type = "password" })
+									@Html.ValidationMessageFor(model => model.RegisterViewModel.Password, null, new { @class = "text-danger" })
+								</div>
+								<div class="form-group">
+									@Html.LabelFor(model => model.RegisterViewModel.Firstname, new { @class = "col-md-3" })
+									@Html.TextBoxFor(model => model.RegisterViewModel.Firstname, new { @class = "form-control" })
+									@Html.ValidationMessageFor(model => model.RegisterViewModel.Firstname, null, new { @class = "text-danger" })
+								</div>
+								<div class="form-group">
+									@Html.LabelFor(model => model.RegisterViewModel.Lastname, new { @class = "col-md-3" })
+									@Html.TextBoxFor(model => model.RegisterViewModel.Lastname, new { @class = "form-control" })
+									@Html.ValidationMessageFor(model => model.RegisterViewModel.Lastname, null, new { @class = "text-danger" })
+								</div>
+								<div class="form-group">
+									@Html.LabelFor(model => model.RegisterViewModel.RoleId, new { @class = "col-md-3" })
+									@Html.DropDownListFor(model => model.RegisterViewModel.RoleId, Model.RegisterViewModel.Roles, new { @class = "form-control" })
+									@Html.ValidationMessageFor(model => model.RegisterViewModel.RoleId, null, new { @class = "text-danger" })
+								</div>
+								<div class="form-group">
+									<div class="row">
+										<div class="col-sm-6 col-sm-offset-3">
+											<input type="submit" name="register-submit" id="register-submit" class="form-control btn btn-register" value="Register">
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-	<form class="form-horizontal col-md-4" asp-controller="User" asp-action="Login" method="post">
-		<div class="form-group">
-			@Html.LabelFor(model => model.Email, new { @class = "col-md-3" })
-			@Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(model => model.Password, new { @class = "col-md-3" })
-			@Html.TextBoxFor(model => model.Password, new { @class = "form-control", @type = "password" })
-			@Html.ValidationMessage("InvalidLogin", null, new { @class = "text-danger" })
-		</div>
-		<div class="pull-right">
-			<button type="submit" class="btn btn-primary">Login</button>
-			<a href="@Url.Action("Index", "Home")" class="btn btn-default">Cancel</a>
-		</div>
-	</form>
 </div>
+
+<script>
+	$(function () {
+		if ('@Model.IsRegisterActive' === "True")
+		{
+			activeRegisterTab();
+		}
+		else {
+			activeLoginTab();
+		}
+
+		$('#login-form-link').click(function (e) {
+			activeLoginTab();
+			e.preventDefault();
+		});
+		$('#register-form-link').click(function (e) {
+			activeRegisterTab();
+			e.preventDefault();
+		});
+
+		function activeLoginTab() {
+			$("#login-form").delay(100).fadeIn(100);
+			$("#register-form").fadeOut(100);
+			$('#register-form-link').removeClass('active');
+			$(this).addClass('active');
+		}
+
+		function activeRegisterTab() {
+			$("#register-form").delay(100).fadeIn(100);
+			$("#login-form").fadeOut(100);
+			$('#login-form-link').removeClass('active');
+			$(this).addClass('active');
+		}
+	});
+</script>
+
