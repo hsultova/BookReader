@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BookReader.Data.Models;
 using BookReader.Data.Repositories;
-using BookReader.Web.ViewModels;
+using BookReader.Web.ViewModels.User;
 using Microsoft.AspNetCore.Authorization;
 using BookReader.Web.Helpers;
 

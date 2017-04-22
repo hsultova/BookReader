@@ -33,6 +33,7 @@ namespace BookReader.Web
 			services.AddDbContext<BookReaderDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BookReaderConnection")));
 			services.AddScoped<IUserRepository, UserRepository>();
 			services.AddScoped<IRoleRepository, RoleRepository>();
+			services.AddScoped<IAuthorRepository, AuthorRepository>();
 
 			// Add framework services.
 			services.AddMvc();

@@ -61,5 +61,9 @@
   <ItemGroup>
     <Build Include="Users.sql" />
     <Build Include="Roles.sql" />
+    <Build Include="Books.sql" />
+    <Build Include="Genres.sql" />
+    <Build Include="Authors.sql" />
+    <Build Include="UserBooks.sql" />
   </ItemGroup>
 </Project>

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace BookReader.Web.ViewModels
+namespace BookReader.Web.ViewModels.User
 {
 	public class UserViewModel
 	{

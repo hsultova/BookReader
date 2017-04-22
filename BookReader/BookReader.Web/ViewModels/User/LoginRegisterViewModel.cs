@@ -1,4 +1,4 @@
-﻿namespace BookReader.Web.ViewModels
+﻿namespace BookReader.Web.ViewModels.User
 {
 	public class LoginRegisterViewModel
 	{

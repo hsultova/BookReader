@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using BookReader.Data.Database;
+﻿using BookReader.Data.Database;
 using BookReader.Data.Models;
 
 namespace BookReader.Data.Repositories
