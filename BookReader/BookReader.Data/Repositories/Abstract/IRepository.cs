@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using BookReader.Data.Models;
 
-namespace BookReader.Data.Repositories
+namespace BookReader.Data.Repositories.Abstract
 {
 	public interface IRepository<EntityType>
 		where EntityType : ModelBase, new()

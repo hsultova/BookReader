@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using BookReader.Data.Models;
-using BookReader.Data.Repositories;
+using BookReader.Data.Repositories.Abstract;
 using BookReader.Web.Helpers;
 using BookReader.Web.ViewModels.Author;
 using Microsoft.AspNetCore.Authorization;

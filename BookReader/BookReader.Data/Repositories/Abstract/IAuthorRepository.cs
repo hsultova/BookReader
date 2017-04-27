@@ -1,6 +1,6 @@
 ﻿using BookReader.Data.Models;
 
-namespace BookReader.Data.Repositories
+namespace BookReader.Data.Repositories.Abstract
 {
 	public interface IAuthorRepository : IRepository<Author>
 	{

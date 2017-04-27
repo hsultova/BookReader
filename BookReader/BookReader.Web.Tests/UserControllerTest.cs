@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using BookReader.Data.Models;
-using BookReader.Data.Repositories;
+using BookReader.Data.Repositories.Abstract;
 using BookReader.Web.Controllers;
 using BookReader.Web.ViewModels.User;
 using Microsoft.AspNetCore.Mvc;

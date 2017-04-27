@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using BookReader.Data.Repositories;
+using BookReader.Data.Repositories.Abstract;
 
 namespace BookReader.Web.Tests
 {

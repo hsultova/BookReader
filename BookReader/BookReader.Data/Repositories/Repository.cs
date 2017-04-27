@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using BookReader.Data.Database;
 using BookReader.Data.Models;
+using BookReader.Data.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookReader.Data.Repositories
