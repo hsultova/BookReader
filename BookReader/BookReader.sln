@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookReader.Data", "BookRead
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BookReader.Database", "BookReader.Database\BookReader.Database.sqlproj", "{2A0E781D-8810-4D01-9D4B-4A8DC2DC789D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{DD4F5A0A-BB8B-4D4A-A057-11A382D74E4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookReader.Web.Tests", "BookReader.Web.Tests\BookReader.Web.Tests.csproj", "{F85386B0-4129-4A81-9EE1-2460062D03EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,8 +33,15 @@ Global
 		{2A0E781D-8810-4D01-9D4B-4A8DC2DC789D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A0E781D-8810-4D01-9D4B-4A8DC2DC789D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2A0E781D-8810-4D01-9D4B-4A8DC2DC789D}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F85386B0-4129-4A81-9EE1-2460062D03EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F85386B0-4129-4A81-9EE1-2460062D03EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F85386B0-4129-4A81-9EE1-2460062D03EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F85386B0-4129-4A81-9EE1-2460062D03EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F85386B0-4129-4A81-9EE1-2460062D03EA} = {DD4F5A0A-BB8B-4D4A-A057-11A382D74E4C}
 	EndGlobalSection
 EndGlobal
