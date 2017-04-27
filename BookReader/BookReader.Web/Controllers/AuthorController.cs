@@ -30,7 +30,7 @@ namespace BookReader.Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var authorNames = AuthorRepository.LoadList().Select(x => x.Name);
+				var authorNames = AuthorRepository.GetAuthorNames();
 				if (authorNames.Contains(model.Name))
 				{
 					ModelState.AddModelError("DuplicateAuthorName", "The Author name already exist.");

@@ -6,14 +6,14 @@ using BookReader.Data.Repositories.Abstract;
 
 namespace BookReader.Data.Repositories
 {
-	public class AuthorRepository : Repository<Author>, IAuthorRepository
+	public class GenreRepository : Repository<Genre>, IGenreRepository
 	{
-		public AuthorRepository(BookReaderDbContext context)
+		public GenreRepository(BookReaderDbContext context)
 			: base(context)
 		{
 		}
 
-		public IEnumerable<string> GetAuthorNames()
+		public IEnumerable<string> GetGenreNames()
 		{
 			var list = LoadList().Select(x => x.Name);
 			return list;

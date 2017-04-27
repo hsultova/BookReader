@@ -35,6 +35,7 @@ namespace BookReader.Web
 			services.AddScoped<IUserRepository, UserRepository>();
 			services.AddScoped<IRoleRepository, RoleRepository>();
 			services.AddScoped<IAuthorRepository, AuthorRepository>();
+			services.AddScoped<IGenreRepository, GenreRepository>();
 
 			// Add framework services.
 			services.AddMvc();
