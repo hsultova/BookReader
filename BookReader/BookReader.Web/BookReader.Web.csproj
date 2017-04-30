@@ -27,9 +27,5 @@
   <ItemGroup>
     <ProjectReference Include="..\BookReader.Data\BookReader.Data.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModels\Book\" />
-    <Folder Include="Views\Book\" />
-  </ItemGroup>
 
 </Project>

@@ -2,16 +2,14 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using BookReader.Data.Models;
 using BookReader.Data.Repositories.Abstract;
-using BookReader.Web.ViewModels.User;
-using Microsoft.AspNetCore.Authorization;
 using BookReader.Web.Helpers;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using BookReader.Web.ViewModels.User;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookReader.Web.Controllers
 {
@@ -30,7 +28,7 @@ namespace BookReader.Web.Controllers
 		[HttpGet]
 		public IActionResult Login()
 		{
-			var model = new LoginRegisterViewModel()
+			var model = new LoginRegisterViewModel
 			{
 				RegisterViewModel = BuildRegisterViewModel()
 			};
@@ -43,10 +41,11 @@ namespace BookReader.Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var result = UserRepository.IsValidLogin(model.LoginViewModel.Email, model.LoginViewModel.Password);
+				bool result = UserRepository.IsValidLogin(model.LoginViewModel.Email, model.LoginViewModel.Password);
 				if (result)
 				{
-					var user = UserRepository.LoadList(u => u.Email == model.LoginViewModel.Email, u => u.Role).First();
+					User user = UserRepository.LoadList(u => u.Email == model.LoginViewModel.Email, u => u.Role).First();
+
 					var claims = new List<Claim> {
 						new Claim(ClaimTypes.Sid, user.Id.ToString()),
 						new Claim(ClaimTypes.Email, user.Email),
@@ -84,14 +83,14 @@ namespace BookReader.Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var emails = UserRepository.LoadList().Select(u => u.Email);
+				IEnumerable<string> emails = UserRepository.LoadList().Select(u => u.Email);
 				if (emails.Contains(model.RegisterViewModel.Email))
 				{
 					ModelState.AddModelError("ExistentEmail", "This Email already exist.");
 				}
 				else
 				{
-					var user = new User()
+					var user = new User
 					{
 						Email = model.RegisterViewModel.Email,
 						Password = model.RegisterViewModel.Password,
@@ -105,7 +104,9 @@ namespace BookReader.Web.Controllers
 					return RedirectToAction("Index", "Home");
 				}
 			}
-			model.RegisterViewModel.Roles = BuildRoleSelectList();
+
+			List<Role> roles = RoleRepository.LoadList().ToList();
+			model.RegisterViewModel.Roles = SelectListHelper.ToSelectListItem<Role>(roles, x => x.Name, x => x.Id.ToString());
 			model.IsRegisterActive = true;
 			return View("Login", model);
 		}
@@ -119,30 +120,14 @@ namespace BookReader.Web.Controllers
 
 		private UserViewModel BuildRegisterViewModel()
 		{
-			var roles = BuildRoleSelectList();
-			var model = new UserViewModel()
+			List<Role> roles = RoleRepository.LoadList().ToList();
+			IList<SelectListItem> roleList = SelectListHelper.ToSelectListItem<Role>(roles, x => x.Name, x => x.Id.ToString());
+			var model = new UserViewModel
 			{
-				Roles = roles
+				Roles = roleList
 			};
 
 			return model;
-		}
-
-		private List<SelectListItem> BuildRoleSelectList()
-		{
-			IList<SelectListItem> roleSelectList = new List<SelectListItem>();
-			var roles = RoleRepository.LoadList();
-
-			foreach (var role in roles)
-			{
-				roleSelectList.Add(new SelectListItem()
-				{
-					Text = role.Name,
-					Value = role.Id.ToString()
-				});
-			}
-
-			return roleSelectList.ToList();
 		}
 	}
 }

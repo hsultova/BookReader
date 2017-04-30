@@ -5,6 +5,6 @@ namespace BookReader.Data.Repositories.Abstract
 {
 	public interface IGenreRepository : IRepository<Genre>
 	{
-		IEnumerable<string> GetGenreNames();
+		List<string> GetGenreNames();
 	}
 }

@@ -13,9 +13,9 @@ namespace BookReader.Data.Repositories
 		{
 		}
 
-		public IEnumerable<string> GetGenreNames()
+		public List<string> GetGenreNames()
 		{
-			var list = LoadList().Select(x => x.Name);
+			var list = LoadList().Select(x => x.Name).ToList();
 			return list;
 		}
 	}

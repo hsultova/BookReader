@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using BookReader.Data.Models;
 using BookReader.Data.Repositories.Abstract;
 using BookReader.Web.Helpers;
@@ -30,16 +30,17 @@ namespace BookReader.Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var genreNames = GenreRepository.GetGenreNames();
+				List<string> genreNames = GenreRepository.GetGenreNames();
+
 				if (genreNames.Contains(model.Name))
 				{
 					ModelState.AddModelError("DuplicateGenreName", "The Genre name already exist.");
 				}
 				else
 				{
-					var author = new Genre() { Name = model.Name };
+					var genre = new Genre { Name = model.Name };
 
-					GenreRepository.Add(author);
+					GenreRepository.Add(genre);
 					return RedirectToAction("Index", "Home");
 				}
 			}

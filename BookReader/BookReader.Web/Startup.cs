@@ -1,15 +1,15 @@
-﻿using BookReader.Data.Database;
+﻿using System;
+using BookReader.Data.Database;
+using BookReader.Data.Repositories;
+using BookReader.Data.Repositories.Abstract;
+using BookReader.Web.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
-using BookReader.Data.Repositories;
-using Microsoft.AspNetCore.Http;
-using System;
-using BookReader.Web.Helpers;
-using BookReader.Data.Repositories.Abstract;
 
 namespace BookReader.Web
 {
@@ -36,6 +36,7 @@ namespace BookReader.Web
 			services.AddScoped<IRoleRepository, RoleRepository>();
 			services.AddScoped<IAuthorRepository, AuthorRepository>();
 			services.AddScoped<IGenreRepository, GenreRepository>();
+			services.AddScoped<IBookRepository, BookRepository>();
 
 			// Add framework services.
 			services.AddMvc();

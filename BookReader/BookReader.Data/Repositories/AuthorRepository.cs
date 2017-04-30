@@ -13,9 +13,9 @@ namespace BookReader.Data.Repositories
 		{
 		}
 
-		public IEnumerable<string> GetAuthorNames()
+		public List<string> GetAuthorNames()
 		{
-			var list = LoadList().Select(x => x.Name);
+			var list = LoadList().Select(x => x.Name).ToList();
 			return list;
 		}
 	}

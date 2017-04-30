@@ -44,6 +44,23 @@ namespace BookReader.Data.Repositories
 			return query.First(x => x.Id == id);
 		}
 
+		public EntityType Load(int id, Expression<Func<EntityType, bool>> predicate, params string[] includeGraph)
+		{
+			IQueryable<EntityType> query = EntitySet;
+
+			foreach (var includeGraphItem in includeGraph)
+			{
+				query = query.Include(includeGraphItem);
+			}
+
+			if (predicate != null)
+			{
+				query = query.Where(predicate);
+			}
+
+			return query.First(x => x.Id == id);
+		}
+
 		public IList<EntityType> LoadList(Expression<Func<EntityType, bool>> predicate, params Expression<Func<EntityType, object>>[] includeGraph)
 		{
 			IQueryable<EntityType> query = EntitySet;
