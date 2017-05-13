@@ -10,11 +10,11 @@ namespace BookReader.Web.Controllers
 {
 	public class GenreController : Controller
 	{
-		private IGenreRepository GenreRepository;
+		private IGenreRepository _genreRepository;
 
 		public GenreController(IGenreRepository genreRepository)
 		{
-			this.GenreRepository = genreRepository;
+			_genreRepository = genreRepository;
 		}
 
 		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
@@ -30,7 +30,7 @@ namespace BookReader.Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				List<string> genreNames = GenreRepository.GetGenreNames();
+				List<string> genreNames = _genreRepository.GetGenreNames();
 
 				if (genreNames.Contains(model.Name))
 				{
@@ -40,7 +40,7 @@ namespace BookReader.Web.Controllers
 				{
 					var genre = new Genre { Name = model.Name };
 
-					GenreRepository.Add(genre);
+					_genreRepository.Add(genre);
 					return RedirectToAction("Index", "Home");
 				}
 			}

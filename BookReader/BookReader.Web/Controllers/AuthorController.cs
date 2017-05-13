@@ -10,11 +10,11 @@ namespace BookReader.Web.Controllers
 {
 	public class AuthorController : Controller
 	{
-		private IAuthorRepository AuthorRepository;
+		private IAuthorRepository _authorRepository;
 
 		public AuthorController(IAuthorRepository authorRepository)
 		{
-			this.AuthorRepository = authorRepository;
+			_authorRepository = authorRepository;
 		}
 
 		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
@@ -30,7 +30,7 @@ namespace BookReader.Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				List<string> authorNames = AuthorRepository.GetAuthorNames();
+				List<string> authorNames = _authorRepository.GetAuthorNames();
 				if (authorNames.Contains(model.Name))
 				{
 					ModelState.AddModelError("DuplicateAuthorName", "The Author name already exist.");
@@ -45,7 +45,7 @@ namespace BookReader.Web.Controllers
 						Website = model.Website
 					};
 
-					AuthorRepository.Add(author);
+					_authorRepository.Add(author);
 					return RedirectToAction("Index", "Home");
 				}
 			}
@@ -57,7 +57,7 @@ namespace BookReader.Web.Controllers
 		[HttpGet]
 		public IActionResult Details(int id)
 		{
-			Author author = AuthorRepository.Load(id, null, "Books", "Books.Genre");
+			Author author = _authorRepository.Load(id, null, "Books", "Books.Genre");
 			var model = new AuthorViewModel
 			{
 				Id = author.Id,

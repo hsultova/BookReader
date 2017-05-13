@@ -12,25 +12,25 @@ namespace BookReader.Web.Controllers
 {
 	public class BookController : Controller
 	{
-		private IBookRepository BookRepository;
-		private IGenreRepository GenreRepository;
-		private IAuthorRepository AuthorRepository;
+		private IBookRepository _bookRepository;
+		private IGenreRepository _genreRepository;
+		private IAuthorRepository _authorRepository;
 
 		public BookController(IBookRepository bookRepository,
 			IGenreRepository genreRepository,
 			IAuthorRepository authorRepository)
 		{
-			this.BookRepository = bookRepository;
-			this.GenreRepository = genreRepository;
-			this.AuthorRepository = authorRepository;
+			_bookRepository = bookRepository;
+			_genreRepository = genreRepository;
+			_authorRepository = authorRepository;
 		}
 
 		[Authorize]
 		[HttpGet]
 		public IActionResult Create(int authorId)
 		{
-			List<Genre> genres = GenreRepository.LoadList().ToList();
-			Author author = AuthorRepository.Load(authorId);
+			List<Genre> genres = _genreRepository.LoadList().ToList();
+			Author author = _authorRepository.Load(authorId);
 
 			var model = new BookViewModel
 			{
@@ -58,13 +58,13 @@ namespace BookReader.Web.Controllers
 					AuthorId = model.AuthorId
 				};
 
-				BookRepository.Add(book);
+				_bookRepository.Add(book);
 				//TODO: Add a new user book with created book ID and current user ID
 
 				return RedirectToAction("Details", "Author", new { Id = model.AuthorId });
 			}
 
-			List<Genre> genres = GenreRepository.LoadList().ToList();
+			List<Genre> genres = _genreRepository.LoadList().ToList();
 			model.Genres = SelectListHelper.ToSelectListItem<Genre>(genres, x => x.Name, x => x.Id.ToString());
 
 			return View(model);

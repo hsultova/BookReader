@@ -15,14 +15,14 @@ namespace BookReader.Web.Controllers
 {
 	public class UserController : Controller
 	{
-		private IUserRepository UserRepository;
-		private IRoleRepository RoleRepository;
+		private IUserRepository _userRepository;
+		private IRoleRepository _roleRepository;
 
 		public UserController(IUserRepository userRepository,
 			IRoleRepository roleRepository)
 		{
-			UserRepository = userRepository;
-			RoleRepository = roleRepository;
+			_userRepository = userRepository;
+			_roleRepository = roleRepository;
 		}
 
 		[HttpGet]
@@ -41,10 +41,10 @@ namespace BookReader.Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				bool result = UserRepository.IsValidLogin(model.LoginViewModel.Email, model.LoginViewModel.Password);
+				bool result = _userRepository.IsValidLogin(model.LoginViewModel.Email, model.LoginViewModel.Password);
 				if (result)
 				{
-					User user = UserRepository.LoadList(u => u.Email == model.LoginViewModel.Email, u => u.Role).First();
+					User user = _userRepository.LoadList(u => u.Email == model.LoginViewModel.Email, u => u.Role).First();
 
 					var claims = new List<Claim> {
 						new Claim(ClaimTypes.Sid, user.Id.ToString()),
@@ -83,7 +83,7 @@ namespace BookReader.Web.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				IEnumerable<string> emails = UserRepository.LoadList().Select(u => u.Email);
+				IEnumerable<string> emails = _userRepository.LoadList().Select(u => u.Email);
 				if (emails.Contains(model.RegisterViewModel.Email))
 				{
 					ModelState.AddModelError("ExistentEmail", "This Email already exist.");
@@ -100,12 +100,12 @@ namespace BookReader.Web.Controllers
 						RoleId = model.RegisterViewModel.RoleId
 					};
 
-					UserRepository.Add(user);
+					_userRepository.Add(user);
 					return RedirectToAction("Index", "Home");
 				}
 			}
 
-			List<Role> roles = RoleRepository.LoadList().ToList();
+			List<Role> roles = _roleRepository.LoadList().ToList();
 			model.RegisterViewModel.Roles = SelectListHelper.ToSelectListItem<Role>(roles, x => x.Name, x => x.Id.ToString());
 			model.IsRegisterActive = true;
 			return View("Login", model);
@@ -120,7 +120,7 @@ namespace BookReader.Web.Controllers
 
 		private UserViewModel BuildRegisterViewModel()
 		{
-			List<Role> roles = RoleRepository.LoadList().ToList();
+			List<Role> roles = _roleRepository.LoadList().ToList();
 			IList<SelectListItem> roleList = SelectListHelper.ToSelectListItem<Role>(roles, x => x.Name, x => x.Id.ToString());
 			var model = new UserViewModel
 			{

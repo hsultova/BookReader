@@ -7,26 +7,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace BookReader.Web.Tests
+namespace BookReader.Web.Tests.ControllersTests
 {
 	[TestClass]
 	public class UserControllerTest
 	{
-		private Mock<IUserRepository> mockUserRepository;
-		private Mock<IRoleRepository> mockRoleRepository;
+		private Mock<IUserRepository> _mockUserRepository;
+		private Mock<IRoleRepository> _mockRoleRepository;
 
 		public UserControllerTest()
 		{
-			mockUserRepository = new Mock<IUserRepository>();
-			mockRoleRepository = new Mock<IRoleRepository>();
+			_mockUserRepository = new Mock<IUserRepository>();
+			_mockRoleRepository = new Mock<IRoleRepository>();
 		}
 
 		[TestMethod]
 		public void Login_ShouldReturnLoginRegisterViewModel()
 		{
 			//Arrange
-			mockRoleRepository.Setup(x => x.LoadList()).Returns(new List<Role>());
-			var userController = new UserController(mockUserRepository.Object, mockRoleRepository.Object);
+			_mockRoleRepository.Setup(x => x.LoadList()).Returns(new List<Role>());
+			var userController = new UserController(_mockUserRepository.Object, _mockRoleRepository.Object);
 
 			//Act
 			var result = userController.Login() as ViewResult;
@@ -55,9 +55,9 @@ namespace BookReader.Web.Tests
 					Lastname = "Test 2"
 				}
 			};
-			mockUserRepository.Setup(m => m.LoadList()).Returns(users);
+			_mockUserRepository.Setup(m => m.LoadList()).Returns(users);
 
-			var controller = new UserController(mockUserRepository.Object, mockRoleRepository.Object);
+			var controller = new UserController(_mockUserRepository.Object, _mockRoleRepository.Object);
 
 			// Act
 			var result = controller.List() as ViewResult;
