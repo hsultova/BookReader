@@ -26,6 +26,5 @@ namespace BookReader.Web.Helpers
 				.OrderBy(l => l.Text)
 				.ToList();
 		}
-
 	}
 }

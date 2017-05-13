@@ -5,10 +5,10 @@ namespace BookReader.Web.Helpers
 	public enum Status
 	{
 		[Display(Name = "Read")]
-		Read = 1,
+		Read,
 		[Display(Name = "To read")]
-		ToRead = 2,
+		ToRead,
 		[Display(Name = "Currently Reading")]
-		CurrentlyReading = 3
+		CurrentlyReading
 	}
 }
