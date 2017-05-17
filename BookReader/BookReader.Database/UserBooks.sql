@@ -1,6 +1,7 @@
 ﻿CREATE TABLE [dbo].[UserBooks]
 (
 	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Status] [nvarchar](100) NOT NULL,
 	[UserId] [int] NOT NULL,
 	[BookId] [int] NOT NULL,
  CONSTRAINT [PK_UserBooks] PRIMARY KEY CLUSTERED 

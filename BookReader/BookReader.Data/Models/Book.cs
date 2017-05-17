@@ -9,8 +9,6 @@ namespace BookReader.Data.Models
 
 		public string Description { get; set; }
 
-		public string Status { get; set; }
-
 		public DateTime Date { get; set; }
 
 		public int AuthorId { get; set; }

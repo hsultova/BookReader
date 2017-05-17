@@ -3,7 +3,6 @@
 	 [Id] [int] IDENTITY(1,1) NOT NULL,
 	 [Title] [nvarchar](100) NOT NULL,
 	 [Description] [nvarchar](1000) NOT NULL,
-	 [Status] [nvarchar](100) NOT NULL,
 	 [Date] [datetime2] NOT NULL,
 	 [AuthorId] [int] NOT NULL,
 	 [GenreId] [int] NOT NULL,

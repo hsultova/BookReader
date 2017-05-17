@@ -15,14 +15,17 @@ namespace BookReader.Web.Controllers
 		private IBookRepository _bookRepository;
 		private IGenreRepository _genreRepository;
 		private IAuthorRepository _authorRepository;
+		private IUserBookRepository _userBookRepository;
 
 		public BookController(IBookRepository bookRepository,
 			IGenreRepository genreRepository,
-			IAuthorRepository authorRepository)
+			IAuthorRepository authorRepository,
+			IUserBookRepository userBookRepository)
 		{
 			_bookRepository = bookRepository;
 			_genreRepository = genreRepository;
 			_authorRepository = authorRepository;
+			_userBookRepository = userBookRepository;
 		}
 
 		[Authorize]
@@ -52,14 +55,12 @@ namespace BookReader.Web.Controllers
 				{
 					Title = model.Title,
 					Description = model.Description,
-					Date = DateTime.Today,
+					Date = DateTime.Now,
 					GenreId = model.GenreId,
-					Status = model.Status.ToString(),
 					AuthorId = model.AuthorId
 				};
 
 				_bookRepository.Add(book);
-				//TODO: Add a new user book with created book ID and current user ID
 
 				return RedirectToAction("Details", "Author", new { Id = model.AuthorId });
 			}
@@ -68,6 +69,51 @@ namespace BookReader.Web.Controllers
 			model.Genres = SelectListHelper.ToSelectListItem<Genre>(genres, x => x.Name, x => x.Id.ToString());
 
 			return View(model);
+		}
+
+		[Authorize]
+		[HttpPost]
+		public IActionResult CreateUserBook(int bookId, string status, BookViewModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				var userId = UserHelper.GetCurrentUserId(HttpContext);
+				var userBook = new UserBook
+				{
+					Status = status,
+					BookId = bookId,
+					UserId = userId
+				};
+
+				_userBookRepository.Add(userBook);
+
+				return RedirectToAction("Details", "Author", new { Id = model.AuthorId });
+			}
+
+			List<Genre> genres = _genreRepository.LoadList().ToList();
+			model.Genres = SelectListHelper.ToSelectListItem<Genre>(genres, x => x.Name, x => x.Id.ToString());
+
+			return View(model);
+		}
+
+		[Authorize]
+		[HttpGet]
+		public IActionResult Index()
+		{
+			IList<Book> books = _bookRepository.LoadList(null, x => x.Author, x => x.Genre);
+
+			return View(books);
+		}
+
+		[Authorize]
+		[HttpGet]
+		public IActionResult UserBookList()
+		{
+			var userId = UserHelper.GetCurrentUserId(HttpContext);
+			var userBooksIds = _userBookRepository.LoadList(x => x.UserId == userId).Select(x => x.BookId);
+			IList<Book> books = _bookRepository.LoadList(x => userBooksIds.Contains(x.Id), x => x.Author, x => x.Genre);
+
+			return View("Index", books);
 		}
 	}
 }

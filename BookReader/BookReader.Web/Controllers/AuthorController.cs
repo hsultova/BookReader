@@ -55,6 +55,14 @@ namespace BookReader.Web.Controllers
 
 		[Authorize]
 		[HttpGet]
+		public IActionResult Index()
+		{
+			var authors = _authorRepository.LoadList();
+			return View(authors);
+		}
+
+		[Authorize]
+		[HttpGet]
 		public IActionResult Details(int id)
 		{
 			Author author = _authorRepository.Load(id, null, "Books", "Books.Genre");

@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Content Include="wwwroot\css\login.css" />
+    <Content Include="wwwroot\css\submenu.css" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />

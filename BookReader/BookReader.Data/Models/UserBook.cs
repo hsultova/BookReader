@@ -4,6 +4,8 @@ namespace BookReader.Data.Models
 {
 	public class UserBook : ModelBase
 	{
+		public string Status { get; set; }
+
 		public int UserId { get; set; }
 
 		public int BookId { get; set; }

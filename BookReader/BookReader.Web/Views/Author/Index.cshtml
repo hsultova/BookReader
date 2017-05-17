@@ -1,0 +1,25 @@
+﻿@model IList<BookReader.Data.Models.Author>
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Genre</th>
+			<th>Date</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var author in Model)
+		{
+			<tr>
+				<td>@author.Name</td>
+				<td>@author.Description</td>
+				<td>@author.Biography</td>
+				<td>@author.Website</td>
+				<td><a href="@Url.Action("Details", new { id = author.Id })"/>View</td>
+			</tr>
+			}
+	</tbody>
+</table>

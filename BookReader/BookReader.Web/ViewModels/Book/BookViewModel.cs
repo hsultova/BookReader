@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using BookReader.Web.Helpers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookReader.Web.ViewModels.Book
@@ -12,9 +11,6 @@ namespace BookReader.Web.ViewModels.Book
 
 		[DisplayFormat(ConvertEmptyStringToNull = false)]
 		public string Description { get; set; }
-
-		[EnumDataType(typeof(Status))]
-		public Status Status { get; set; }
 
 		public int AuthorId { get; set; }
 

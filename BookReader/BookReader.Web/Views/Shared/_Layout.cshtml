@@ -7,6 +7,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"] - BookReader</title>
 
+	<link href="~/css/submenu.css" rel="stylesheet" asp-append-version="true" />
+
 	<environment names="Development">
 		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
 		<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -36,33 +38,54 @@
 					<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
 				</ul>
 				<div class="collapse navbar-collapse">
-					@if (User.IsInRole(BookReaderRoles.Admin))
-					{
-						<ul class="nav navbar-nav">
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
-								<ul class="dropdown-menu dropdown-menu-left">
-									<li><a asp-controller="Author" asp-action="Create">Create Author</a></li>
-									<li><a asp-controller="Genre" asp-action="Create">Create Genre</a></li>
-								</ul>
-							</li>
-						</ul>
-						<form style="display: none;" id="logout-form" asp-controller="User" asp-action="Logout" method="post">
-							<button type="submit">Log out</button>
-						</form>
-					}
 					@if (User.Identity.IsAuthenticated)
 					{
-						<ul class="nav navbar-nav navbar-right">
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">@User.Identity.Name <b class="caret"></b></a>
-								<ul class="dropdown-menu dropdown-menu-left">
-									<li>
-										<a href="#" id="logout-link">Logout</a>
-									</li>
-								</ul>
-							</li>
+						<ul class="nav navbar-nav">
+							<li><a asp-area="" asp-controller="Book" asp-action="UserBookList">My Books</a></li>
 						</ul>
+						<div class="collapse navbar-collapse pull-right">
+							<ul class="nav navbar-nav">
+								@if (User.IsInRole(BookReaderRoles.Admin))
+								{
+									<li class="dropdown">
+										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<b class="caret"></b></a>
+										<ul class="dropdown-menu">
+											<li class="dropdown dropdown-submenu">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Author</a>
+												<ul class="dropdown-menu">
+													<li><a asp-controller="Author" asp-action="Create">Create</a></li>
+													<li><a asp-controller="Author" asp-action="Index">List</a></li>
+												</ul>
+												<form style="display: none;" id="logout-form" asp-controller="User" asp-action="Logout" method="post">
+													<button type="submit">Log out</button>
+												</form>
+											</li>
+											<li class="dropdown dropdown-submenu">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Genre</a>
+												<ul class="dropdown-menu">
+													<li><a asp-controller="Genre" asp-action="Create">Create</a></li>
+													<li><a href="#">List</a></li>
+												</ul>
+											</li>
+											<li class="dropdown dropdown-submenu">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Book</a>
+												<ul class="dropdown-menu">
+													<li><a asp-controller="Book" asp-action="Index">List</a></li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+								}
+								<li class="dropdown">
+									<a href="#" class="dropdown-toggle" data-toggle="dropdown">@User.Identity.Name <b class="caret"></b></a>
+									<ul class="dropdown-menu dropdown-menu-left">
+										<li>
+											<a href="#" id="logout-link">Logout</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
 						<form style="display: none;" id="logout-form" asp-controller="User" asp-action="Logout" method="post">
 							<button type="submit">Log out</button>
 						</form>
@@ -107,7 +130,17 @@
 </html>
 
 <script>
+	$(document).ready(function () {
+		$('ul.dropdown-menu [data-toggle=dropdown]').on('click', function (event) {
+			event.preventDefault();
+			event.stopPropagation();
+			$(this).parent().siblings().removeClass('open');
+			$(this).parent().toggleClass('open');
+		});
+	});
+
 	$('#logout-link').on('click', function () {
 		$('#logout-form').submit();
 	});
+
 </script>
