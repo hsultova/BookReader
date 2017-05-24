@@ -1,0 +1,64 @@
+﻿@model IList<BookReader.Data.Models.Genre>
+
+<h3>Genres</h3>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var genre in Model)
+		{
+			<tr>
+				<td>@genre.Name</td>
+				<td><a href="@Url.Action("Edit", new { id = genre.Id })">Edit</a></td>
+				@*<td>
+					<a href="#" id="deleteGenre">Delete</a>
+					<form style="display:none" asp-controller="Genre" asp-action="Delete" method="post">
+						<input type="hidden" name="Id" value="@genre.Id" />
+						<input type="submit" />
+					</form>
+				</td>*@
+			</tr>
+
+			}
+	</tbody>
+
+</table>
+
+@*<div style="display:none" id="deleteGenreConfirmation" title="Delete Genre">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;">
+		</span>This genre will be permanently deleted. Are you sure?
+	</p>
+</div>
+
+<script>
+	$(function () {
+		$("#deleteGenreConfirmation").dialog({
+			resizable: false,
+			height: "auto",
+			width: 400,
+			modal: true,
+			buttons: {
+				"Delete": function () {
+					$(this).dialog("close");
+				},
+				Cancel: function () {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});
+
+	$('#deleteGenre').on('click', function () {
+		$("#deleteGenreConfirmation").dialog('open');
+	});
+</script>*@
+
+
+
+
+
