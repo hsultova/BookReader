@@ -1,5 +1,8 @@
 ﻿@model IList<BookReader.Data.Models.Genre>
 
+<link href="~/lib/jquery-ui/themes/base/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js" asp-append-version="true"></script>
+
 <h3>Genres</h3>
 <table class="table table-hover">
 	<thead>
@@ -14,13 +17,13 @@
 			<tr>
 				<td>@genre.Name</td>
 				<td><a href="@Url.Action("Edit", new { id = genre.Id })">Edit</a></td>
-				@*<td>
+				<td>
 					<a href="#" id="deleteGenre">Delete</a>
 					<form style="display:none" asp-controller="Genre" asp-action="Delete" method="post">
 						<input type="hidden" name="Id" value="@genre.Id" />
 						<input type="submit" />
 					</form>
-				</td>*@
+				</td>
 			</tr>
 
 			}
@@ -28,7 +31,7 @@
 
 </table>
 
-@*<div style="display:none" id="deleteGenreConfirmation" title="Delete Genre">
+<div style="display:none" id="deleteGenreConfirmation" title="Delete Genre">
 	<p>
 		<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;">
 		</span>This genre will be permanently deleted. Are you sure?
@@ -36,29 +39,23 @@
 </div>
 
 <script>
-	$(function () {
-		$("#deleteGenreConfirmation").dialog({
-			resizable: false,
-			height: "auto",
-			width: 400,
-			modal: true,
-			buttons: {
-				"Delete": function () {
-					$(this).dialog("close");
-				},
-				Cancel: function () {
-					$(this).dialog("close");
+	$(document).ready(function () {
+		$('#deleteGenre').on('click', function () {
+			$("#deleteGenreConfirmation").dialog({
+				resizable: false,
+				height: "auto",
+				width: 400,
+				modal: true,
+				buttons: {
+					"Delete": function () {
+						$(this).dialog("close");
+					},
+					Cancel: function () {
+						$(this).dialog("close");
+					}
 				}
-			}
+			});
 		});
 	});
 
-	$('#deleteGenre').on('click', function () {
-		$("#deleteGenreConfirmation").dialog('open');
-	});
-</script>*@
-
-
-
-
-
+</script>
