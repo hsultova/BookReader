@@ -1,4 +1,8 @@
-﻿@model IList<BookReader.Data.Models.Author>
+﻿@using BookReader.Web.Helpers
+@model IList<BookReader.Data.Models.Author>
+
+<link href="~/lib/jquery-ui/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js" asp-append-version="true"></script>
 
 <table class="table table-hover">
 	<thead>
@@ -18,8 +22,52 @@
 				<td>@author.Description</td>
 				<td>@author.Biography</td>
 				<td>@author.Website</td>
-				<td><a href="@Url.Action("Details", new { id = author.Id })"/>View</td>
+				<td>
+					<a href="@Url.Action("Details", new { id = author.Id })" />View
+					@if (User.IsInRole(BookReaderRoles.Admin))
+					{
+						<a href="@Url.Action("Edit", new { id = author.Id })">Edit</a>
+						<a href="#" data-authorId="@author.Id" class="deleteAuthor">Delete</a>
+					}
+
+					<form id="@( "deleteAuthorForm" + author.Id)" style="display:none" asp-controller="Author" asp-action="Delete" method="post">
+						<input type="hidden" name="Id" value="@author.Id" />
+						<input type="submit" />
+					</form>
+
+				</td>
 			</tr>
 			}
 	</tbody>
 </table>
+
+
+<div style="display:none" id="deleteAuthorConfirmation" title="Delete Author">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;">
+		</span>This author will be permanently deleted. Are you sure?
+	</p>
+</div>
+
+<script>
+	$(document).ready(function () {
+		$('.deleteAuthor').on('click', function () {
+			let id = $(this).attr('data-authorId');
+			$("#deleteAuthorConfirmation").dialog({
+				resizable: false,
+				height: "auto",
+				width: 400,
+				modal: true,
+				buttons: {
+					"Delete": function () {
+						$('#deleteAuthorForm' + id).submit();
+					},
+					Cancel: function () {
+						$(this).dialog("close");
+					}
+				}
+			});
+		});
+	});
+
+</script>

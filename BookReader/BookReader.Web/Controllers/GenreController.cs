@@ -78,18 +78,12 @@ namespace BookReader.Web.Controllers
 			{
 				List<string> genreNames = _genreRepository.GetGenreNames();
 
-				if (genreNames.Contains(model.Name))
-				{
-					ModelState.AddModelError("DuplicateGenreName", "The Genre name already exist.");
-				}
-				else
-				{
-					Genre genre = _genreRepository.Load(model.Id);
-					genre.Name = model.Name;
+				Genre genre = _genreRepository.Load(model.Id);
+				genre.Name = model.Name;
 
-					_genreRepository.Save(genre);
-					return RedirectToAction("Index", "Genre");
-				}
+				_genreRepository.Save(genre);
+
+				return RedirectToAction("Index", "Genre");
 			}
 
 			return View(model);

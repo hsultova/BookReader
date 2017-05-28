@@ -17,6 +17,14 @@ namespace BookReader.Web.Controllers
 			_authorRepository = authorRepository;
 		}
 
+		[Authorize]
+		[HttpGet]
+		public IActionResult Index()
+		{
+			IList<Author> authors = _authorRepository.LoadList();
+			return View(authors);
+		}
+
 		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
 		[HttpGet]
 		public IActionResult Create()
@@ -46,19 +54,11 @@ namespace BookReader.Web.Controllers
 					};
 
 					_authorRepository.Add(author);
-					return RedirectToAction("Index", "Home");
+					return RedirectToAction("Index", "Author");
 				}
 			}
 
 			return View(model);
-		}
-
-		[Authorize]
-		[HttpGet]
-		public IActionResult Index()
-		{
-			var authors = _authorRepository.LoadList();
-			return View(authors);
 		}
 
 		[Authorize]
@@ -77,6 +77,57 @@ namespace BookReader.Web.Controllers
 			};
 
 			return View(model);
+		}
+
+		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
+		[HttpGet]
+		public IActionResult Edit(int id)
+		{
+			Author author = _authorRepository.Load(id);
+			var model = new AuthorViewModel
+			{
+				Id = author.Id,
+				Name = author.Name,
+				Biography = author.Biography,
+				Description = author.Description,
+				Website = author.Website
+			};
+
+			return View(model);
+		}
+
+		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
+		[HttpPost]
+		public IActionResult Edit(AuthorViewModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				List<string> authorNames = _authorRepository.GetAuthorNames();
+
+				Author author = _authorRepository.Load(model.Id);
+				author.Name = model.Name;
+				author.Description = model.Description;
+				author.Biography = model.Biography;
+				author.Website = model.Website;
+
+				_authorRepository.Save(author);
+
+				return RedirectToAction("Index", "Author");
+
+			}
+
+			return View(model);
+		}
+
+		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
+		[HttpPost]
+		public IActionResult Delete(int id)
+		{
+			Author author = _authorRepository.Load(id, null, "Books");
+
+			_authorRepository.Remove(author);
+
+			return RedirectToAction("Index", "Author");
 		}
 	}
 }

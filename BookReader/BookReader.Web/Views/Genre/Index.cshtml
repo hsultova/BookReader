@@ -1,4 +1,5 @@
-﻿@model IList<BookReader.Data.Models.Genre>
+﻿@using BookReader.Web.Helpers
+@model IList<BookReader.Data.Models.Genre>
 @*<link href="~/lib/jquery-ui/themes/start/jquery-ui.css" rel="stylesheet" />*@
 <link href="~/lib/jquery-ui/themes/smoothness/jquery-ui.css" rel="stylesheet" />
 <script src="~/lib/jquery-ui/jquery-ui.js" asp-append-version="true"></script>
@@ -16,9 +17,13 @@
 		{
 			<tr>
 				<td>@genre.Name</td>
-				<td><a href="@Url.Action("Edit", new { id = genre.Id })">Edit</a></td>
+
 				<td>
-					<a href="#" data-genreId="@genre.Id" class="deleteGenre">Delete</a>
+					@if (User.IsInRole(BookReaderRoles.Admin))
+					{
+						<a href="@Url.Action("Edit", new { id = genre.Id })">Edit</a>
+						<a href="#" data-genreId="@genre.Id" class="deleteGenre">Delete</a>
+					}
 					<form id="@( "deleteGenreForm" + genre.Id)" style="display:none" asp-controller="Genre" asp-action="Delete" method="post">
 						<input type="hidden" name="Id" value="@genre.Id" />
 						<input type="submit" />
