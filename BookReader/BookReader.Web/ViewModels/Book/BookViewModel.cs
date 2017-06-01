@@ -6,6 +6,8 @@ namespace BookReader.Web.ViewModels.Book
 {
 	public class BookViewModel
 	{
+		public int Id { get; set; }
+
 		[Required]
 		public string Title { get; set; }
 
@@ -17,6 +19,14 @@ namespace BookReader.Web.ViewModels.Book
 		public string AuthorName { get; set; }
 
 		public int GenreId { get; set; }
+
+		public string GenreName { get; set; }
+
+		public string Date { get; set; }
+
+		public bool IsUserBook { get; set; }
+
+		public string Status { get; set; }
 
 		public IList<SelectListItem> Genres { get; set; }
 	}

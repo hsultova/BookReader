@@ -3,6 +3,7 @@ using BookReader.Data.Models;
 using BookReader.Data.Repositories.Abstract;
 using BookReader.Web.Helpers;
 using BookReader.Web.ViewModels.Author;
+using BookReader.Web.ViewModels.Book;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,10 +12,13 @@ namespace BookReader.Web.Controllers
 	public class AuthorController : Controller
 	{
 		private IAuthorRepository _authorRepository;
+		private IUserBookRepository _userBookRepository;
 
-		public AuthorController(IAuthorRepository authorRepository)
+		public AuthorController(IAuthorRepository authorRepository,
+			IUserBookRepository userBookRepository)
 		{
 			_authorRepository = authorRepository;
+			_userBookRepository = userBookRepository;
 		}
 
 		[Authorize]
@@ -65,7 +69,24 @@ namespace BookReader.Web.Controllers
 		[HttpGet]
 		public IActionResult Details(int id)
 		{
+			var books = new List<BookViewModel>();
+			var userId = UserHelper.GetCurrentUserId(HttpContext);
 			Author author = _authorRepository.Load(id, null, "Books", "Books.Genre");
+
+			foreach (var book in author.Books)
+			{
+				books.Add(new BookViewModel()
+				{
+					Id = book.Id,
+					Title = book.Title,
+					Description = book.Description,
+					AuthorName = book.Author.Name,
+					GenreName = book.Genre.Name,
+					Date = book.Date.ToString(),
+					IsUserBook = _userBookRepository.IsUserBook(book.Id, userId)
+				});
+			}
+
 			var model = new AuthorViewModel
 			{
 				Id = author.Id,
@@ -73,7 +94,7 @@ namespace BookReader.Web.Controllers
 				Biography = author.Biography,
 				Description = author.Description,
 				Website = author.Website,
-				Books = author.Books
+				Books = books
 			};
 
 			return View(model);

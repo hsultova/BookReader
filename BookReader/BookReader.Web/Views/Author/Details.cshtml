@@ -1,5 +1,8 @@
-﻿@model BookReader.Web.ViewModels.Author.AuthorViewModel
+﻿@using BookReader.Web.Helpers
+@model BookReader.Web.ViewModels.Author.AuthorViewModel
 
+<link href="~/lib/jquery-ui/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js" asp-append-version="true"></script>
 <div class="content">
 	<h3>@Model.Name</h3>
 	<div class="row">
@@ -20,7 +23,10 @@
 	</div>
 	<br />
 	<div class="pull-right">
-		<a class="btn btn-primary " href="@Url.Action("Create", "Book", new { authorId = Model.Id})">Add new book</a>
+		@if (User.IsInRole(BookReaderRoles.Admin))
+		{
+			<a class="btn btn-primary " href="@Url.Action("Create", "Book", new { authorId = Model.Id })">Add new book</a>
+		}
 	</div>
 	<table class="table table-hover">
 		<thead>
@@ -37,11 +43,56 @@
 				<tr>
 					<td>@book.Title</td>
 					<td>@book.Description</td>
-					<td>@book.Genre.Name</td>
+					<td>@book.GenreName</td>
 					<td>@book.Date</td>
+					<td></td>
+					<td>
+						@if (book.IsUserBook)
+						{
+							<div>Added to my books</div>
+						}
+						else
+						{
+							<a class="btn btn-primary addToMyBooksButton" href="#" data-bookId="@book.Id">Add to my books</a>
+						}
+						<div style="display:none" id="addToMyBooks" title="Add to my books">
+							<form id="@("addUserBookForm" + book.Id)" class="form-horizontal col-md-4" asp-controller="Book" asp-action="CreateUserBook" method="post">
+								<input type="hidden" name="authorId" value="@Model.Id" />
+								<input type="hidden" name="bookId" value="@book.Id" />
+								<div class="form-group">
+									@Html.Label("Status", "Status", new { @class = "col-md-3" })
+									@Html.DropDownList("Status", Html.GetEnumSelectList<Status>(), new { @class = "form-control" })
+								</div>
+							</form>
+						</div>
+					</td>
 				</tr>
+
 			}
 		</tbody>
 	</table>
+
 </div>
 
+<script>
+	$(document).ready(function () {
+		$('.addToMyBooksButton').on('click', function () {
+			let id = $(this).attr('data-bookId');
+			$("#addToMyBooks").dialog({
+				resizable: false,
+				height: "auto",
+				width: 400,
+				modal: true,
+				buttons: {
+					"Add": function () {
+						$('#addUserBookForm' + id).submit();
+					},
+					Cancel: function () {
+						$(this).dialog("close");
+					}
+				}
+			});
+		});
+	});
+
+</script>

@@ -1,4 +1,5 @@
-﻿@model IList<BookReader.Data.Models.Book>
+﻿@using BookReader.Web.Helpers
+@model IList<BookReader.Web.ViewModels.Book.BookViewModel>
 
 <table class="table table-hover">
 	<thead>
@@ -16,9 +17,13 @@
 			<tr>
 				<td>@book.Title</td>
 				<td>@book.Description</td>
-				<td>@book.Genre.Name</td>
+				<td>@book.GenreName</td>
 				<td>@book.Date</td>
-				<td>@book.Author.Name</td>
+				<td>@book.AuthorName</td>
+				@if (book.Status != null)
+				{
+					<td>@((Status)Enum.Parse(typeof(Status), book.Status))</td>
+				}
 			</tr>
 			}
 	</tbody>

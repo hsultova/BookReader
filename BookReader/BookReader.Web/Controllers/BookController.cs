@@ -30,6 +30,28 @@ namespace BookReader.Web.Controllers
 
 		[Authorize]
 		[HttpGet]
+		public IActionResult Index()
+		{
+			var model = new List<BookViewModel>();
+			IList<Book> books = _bookRepository.LoadList(null, x => x.Author, x => x.Genre);
+
+			foreach (var book in books)
+			{
+				model.Add(new BookViewModel
+				{
+					Title = book.Title,
+					AuthorName = book.Author.Name,
+					GenreName = book.Genre.Name,
+					Description = book.Description,
+					Date = book.Date.ToString()
+				});
+			}
+
+			return View(model);
+		}
+
+		[Authorize]
+		[HttpGet]
 		public IActionResult Create(int authorId)
 		{
 			List<Genre> genres = _genreRepository.LoadList().ToList();
@@ -73,47 +95,60 @@ namespace BookReader.Web.Controllers
 
 		[Authorize]
 		[HttpPost]
-		public IActionResult CreateUserBook(int bookId, string status, BookViewModel model)
+		public IActionResult CreateUserBook(int authorId, int bookId, string status)
 		{
-			if (ModelState.IsValid)
+			var userId = UserHelper.GetCurrentUserId(HttpContext);
+			var userBook = new UserBook
 			{
-				var userId = UserHelper.GetCurrentUserId(HttpContext);
-				var userBook = new UserBook
-				{
-					Status = status,
-					BookId = bookId,
-					UserId = userId
-				};
+				Status = status,
+				BookId = bookId,
+				UserId = userId
+			};
 
-				_userBookRepository.Add(userBook);
+			_userBookRepository.Add(userBook);
 
-				return RedirectToAction("Details", "Author", new { Id = model.AuthorId });
-			}
-
-			List<Genre> genres = _genreRepository.LoadList().ToList();
-			model.Genres = SelectListHelper.ToSelectListItem<Genre>(genres, x => x.Name, x => x.Id.ToString());
-
-			return View(model);
-		}
-
-		[Authorize]
-		[HttpGet]
-		public IActionResult Index()
-		{
-			IList<Book> books = _bookRepository.LoadList(null, x => x.Author, x => x.Genre);
-
-			return View(books);
+			return RedirectToAction("Details", "Author", new { Id = authorId });
 		}
 
 		[Authorize]
 		[HttpGet]
 		public IActionResult UserBookList()
 		{
+			var model = new List<BookViewModel>();
 			var userId = UserHelper.GetCurrentUserId(HttpContext);
-			var userBooksIds = _userBookRepository.LoadList(x => x.UserId == userId).Select(x => x.BookId);
-			IList<Book> books = _bookRepository.LoadList(x => userBooksIds.Contains(x.Id), x => x.Author, x => x.Genre);
+			IList<UserBook> userBooks = _userBookRepository.LoadList(x => x.UserId == userId);
+			IList<Book> books = _bookRepository.LoadList(null, x => x.Author, x => x.Genre);
 
-			return View("Index", books);
+			//My books - books with status
+			//TODO: Refactoring
+			var myBooks = books.Join(userBooks,
+				book => book.Id,
+				userBook => userBook.BookId,
+				(book, userBook) => new { Book = book, UserBook = userBook }).Select(b => new
+				{
+					b.Book.Title,
+					b.Book.Description,
+					b.Book.Date,
+					b.Book.Author,
+					b.Book.Genre,
+					b.Book.Id,
+					b.UserBook.Status
+				});
+
+			foreach (var book in myBooks)
+			{
+				model.Add(new BookViewModel
+				{
+					Title = book.Title,
+					AuthorName = book.Author.Name,
+					GenreName = book.Genre.Name,
+					Description = book.Description,
+					Date = book.Date.ToString(),
+					Status = book.Status
+				});
+			}
+
+			return View("Index", model);
 		}
 	}
 }
