@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookReader.Data.Models
 {
 	public class Book : ModelBase
 	{
+		public Book()
+		{
+			UserBooks = new List<UserBook>();
+		}
+
 		public string Title { get; set; }
 
 		public string Description { get; set; }
@@ -20,5 +26,7 @@ namespace BookReader.Data.Models
 
 		[ForeignKey("GenreId")]
 		public Genre Genre { get; set; }
+
+		public IList<UserBook> UserBooks { get; set; }
 	}
 }

@@ -1,9 +1,13 @@
 ﻿@using BookReader.Web.Helpers
 @model IList<BookReader.Web.ViewModels.Book.BookViewModel>
 
+<link href="~/lib/jquery-ui/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js" asp-append-version="true"></script>
+
 <table class="table table-hover">
 	<thead>
 		<tr>
+			<th></th>
 			<th>Title</th>
 			<th>Description</th>
 			<th>Genre</th>
@@ -15,6 +19,7 @@
 		@foreach (var book in Model)
 		{
 			<tr>
+				<td><input type="hidden" class="bookId" data-bookId="@book.Id" /></td>
 				<td>@book.Title</td>
 				<td>@book.Description</td>
 				<td>@book.GenreName</td>
@@ -22,9 +27,140 @@
 				<td>@book.AuthorName</td>
 				@if (book.Status != null)
 				{
-					<td>@((Status)Enum.Parse(typeof(Status), book.Status))</td>
+					<td>@Html.DropDownList("Status", book.StatusList, new { @class = "form-control statusDropdown", @data_bookId = @book.Id })</td>
+					<td>
+						<a href="#" data-userbookId="@book.Id" class="deleteUserBook">Remove</a>
+						<form id="@( "deleteUserBookForm" + book.Id)" style="display:none" asp-controller="Book" asp-action="Remove" method="post">
+							<input type="hidden" name="Id" value="@book.Id" />
+							<input type="submit" />
+						</form>
+					</td>
+				}
+				else
+				{
+					<td>
+						@if (book.IsUserBook)
+						{
+							<div>Added to my books</div>
+						}
+						else
+						{
+							<a class="btn btn-primary addToMyBooksButton" href="#" data-bookId="@book.Id">Add to my books</a>
+						}
+						<div style="display:none" id="addToMyBooks" title="Add to my books">
+							<form id="@("addUserBookForm" + book.Id)" class="form-horizontal col-md-4" asp-controller="Book" asp-action="CreateUserBook" method="post">
+								<input type="hidden" name="bookId" value="@book.Id" />
+								<div class="form-group">
+									@Html.Label("Status", "Status", new { @class = "col-md-3" })
+									@Html.DropDownList("Status", Html.GetEnumSelectList<Status>(), new { @class = "form-control" })
+								</div>
+							</form>
+						</div>
+					</td>
+					@if (User.IsInRole(BookReaderRoles.Admin))
+					{
+						<td>
+							<a href="@Url.Action("Edit", new { id = book.Id })">Edit</a>
+							<a href="#" data-bookId="@book.Id" class="deleteBook">Delete</a>
+							<form id="@( "deleteBookForm" + book.Id)" style="display:none" asp-controller="Book" asp-action="Delete" method="post">
+								<input type="hidden" name="Id" value="@book.Id" />
+								<input type="submit" />
+							</form>
+						</td>
+					}
 				}
 			</tr>
 			}
 	</tbody>
 </table>
+
+
+<div style="display:none" id="deleteBookConfirmation" title="Delete Book">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;">
+		</span>This book will be permanently deleted. Are you sure?
+	</p>
+</div>
+
+<div style="display:none" id="deleteUserBookConfirmation" title="Remove Book">
+	<p>
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;">
+		</span>Are you sure you want to remove this book?
+	</p>
+</div>
+
+
+<script>
+	$(document).ready(function () {
+
+		$('.addToMyBooksButton').on('click', function () {
+			let id = $(this).attr('data-bookId');
+			$("#addToMyBooks").dialog({
+				resizable: false,
+				height: "auto",
+				width: 400,
+				modal: true,
+				buttons: {
+					"Add": function () {
+						$('#addUserBookForm' + id).submit();
+					},
+					Cancel: function () {
+						$(this).dialog("close");
+					}
+				}
+			});
+		});
+
+
+		$('.deleteBook').on('click', function () {
+			let id = $(this).attr('data-bookId');
+			$("#deleteBookConfirmation").dialog({
+				resizable: false,
+				height: "auto",
+				width: 400,
+				modal: true,
+				buttons: {
+					"Delete": function () {
+						$('#deleteBookForm' + id).submit();
+					},
+					Cancel: function () {
+						$(this).dialog("close");
+					}
+				}
+			});
+		});
+
+		$('.deleteUserBook').on('click', function () {
+			let id = $(this).attr('data-userbookId');
+			$("#deleteUserBookConfirmation").dialog({
+				resizable: false,
+				height: "auto",
+				width: 400,
+				modal: true,
+				buttons: {
+					"Remove": function () {
+						$('#deleteUserBookForm' + id).submit();
+					},
+					Cancel: function () {
+						$(this).dialog("close");
+					}
+				}
+			});
+		});
+
+		$('.statusDropdown').on('change', function () {
+		let bookId = $(this).attr('data-bookId');
+		let status = $(this).val();
+
+		$.ajax({
+			type: "POST",
+			url: '@Url.Action("UpdateStatus", "Book")',
+			data: { bookId: bookId, status: status },
+			success: function (data) {
+
+			}
+		});
+	});
+	});
+
+</script>

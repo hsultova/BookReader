@@ -33,17 +33,20 @@ namespace BookReader.Web.Controllers
 		public IActionResult Index()
 		{
 			var model = new List<BookViewModel>();
+			var userId = UserHelper.GetCurrentUserId(HttpContext);
 			IList<Book> books = _bookRepository.LoadList(null, x => x.Author, x => x.Genre);
 
 			foreach (var book in books)
 			{
 				model.Add(new BookViewModel
 				{
+					Id = book.Id,
 					Title = book.Title,
 					AuthorName = book.Author.Name,
 					GenreName = book.Genre.Name,
 					Description = book.Description,
-					Date = book.Date.ToString()
+					Date = book.Date.ToString(),
+					IsUserBook = _userBookRepository.IsUserBook(book.Id, userId)
 				});
 			}
 
@@ -95,7 +98,7 @@ namespace BookReader.Web.Controllers
 
 		[Authorize]
 		[HttpPost]
-		public IActionResult CreateUserBook(int authorId, int bookId, string status)
+		public IActionResult CreateUserBook(int authorId, int bookId, int status)
 		{
 			var userId = UserHelper.GetCurrentUserId(HttpContext);
 			var userBook = new UserBook
@@ -107,7 +110,14 @@ namespace BookReader.Web.Controllers
 
 			_userBookRepository.Add(userBook);
 
-			return RedirectToAction("Details", "Author", new { Id = authorId });
+			if (authorId == 0)
+			{
+				return RedirectToAction("Index", "Book");
+			}
+			else
+			{
+				return RedirectToAction("Details", "Author", new { Id = authorId });
+			}
 		}
 
 		[Authorize]
@@ -131,7 +141,7 @@ namespace BookReader.Web.Controllers
 					b.Book.Date,
 					b.Book.Author,
 					b.Book.Genre,
-					b.Book.Id,
+					b.UserBook.Id,
 					b.UserBook.Status
 				});
 
@@ -139,16 +149,94 @@ namespace BookReader.Web.Controllers
 			{
 				model.Add(new BookViewModel
 				{
+					Id = book.Id,
 					Title = book.Title,
 					AuthorName = book.Author.Name,
 					GenreName = book.Genre.Name,
 					Description = book.Description,
 					Date = book.Date.ToString(),
-					Status = book.Status
+					Status = book.Status,
+					StatusList = SelectListHelper.ToSelectListItem<Status>(Enum.GetValues(typeof(Status)).Cast<Status>().ToList(), x => x.ToString(), x => x.GetHashCode().ToString(), book.Status.ToString())
 				});
 			}
 
 			return View("Index", model);
+		}
+
+		[Authorize]
+		[HttpPost]
+		public IActionResult UpdateStatus(int bookId, int status)
+		{
+			var userId = UserHelper.GetCurrentUserId(HttpContext);
+			UserBook userBook = _userBookRepository.Load(bookId);
+			userBook.Status = status;
+
+			_userBookRepository.Save(userBook);
+
+			return RedirectToAction("UserBookList", "Book");
+		}
+
+		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
+		[HttpGet]
+		public IActionResult Edit(int id)
+		{
+			Book book = _bookRepository.Load(id);
+			var model = new BookViewModel
+			{
+				Id = book.Id,
+				Title = book.Title,
+				Description = book.Description,
+				AuthorId = book.AuthorId,
+				GenreId = book.GenreId
+			};
+
+			List<Genre> genres = _genreRepository.LoadList().ToList();
+			model.Genres = SelectListHelper.ToSelectListItem<Genre>(genres, x => x.Name, x => x.Id.ToString());
+
+			return View(model);
+		}
+
+		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
+		[HttpPost]
+		public IActionResult Edit(BookViewModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				Book book = _bookRepository.Load(model.Id);
+				book.Title = model.Title;
+				book.Description = model.Description;
+				book.GenreId = model.GenreId;
+
+				_bookRepository.Save(book);
+
+				return RedirectToAction("Index", "Book");
+
+			}
+
+			return View(model);
+		}
+
+		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
+		[HttpPost]
+		public IActionResult Delete(int id)
+		{
+			Book book = _bookRepository.Load(id, null, "UserBooks");
+
+			_bookRepository.Remove(book);
+
+			return RedirectToAction("Index", "Book");
+		}
+
+		//Remove book from my book list
+		[Authorize]
+		[HttpPost]
+		public IActionResult Remove(int id)
+		{
+			UserBook book = _userBookRepository.Load(id);
+
+			_userBookRepository.Remove(book);
+
+			return RedirectToAction("UserBookList", "Book");
 		}
 	}
 }

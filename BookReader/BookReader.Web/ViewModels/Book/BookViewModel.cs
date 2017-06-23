@@ -26,7 +26,9 @@ namespace BookReader.Web.ViewModels.Book
 
 		public bool IsUserBook { get; set; }
 
-		public string Status { get; set; }
+		public int? Status { get; set; }
+
+		public IList<SelectListItem> StatusList { get; set; }
 
 		public IList<SelectListItem> Genres { get; set; }
 	}

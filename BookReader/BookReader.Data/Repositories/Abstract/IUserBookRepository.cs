@@ -4,7 +4,7 @@ namespace BookReader.Data.Repositories.Abstract
 {
 	public interface IUserBookRepository : IRepository<UserBook>
 	{
-		//If a book is added to my books list
+		//Is a book added to my books list
 		bool IsUserBook(int bookId, int userId);
 	}
 }
