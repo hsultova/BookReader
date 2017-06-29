@@ -1,8 +1,6 @@
 ﻿@model BookReader.Web.ViewModels.User.LoginRegisterViewModel
-
 <link href="~/css/login.css" asp-append-version="true" rel="stylesheet" />
 <script src="~/lib/jquery/dist/jquery.js"></script>
-
 <div class="container">
 	<div class="row">
 		<div class="col-md-6 col-md-offset-3">
@@ -23,11 +21,11 @@
 						<div class="col-lg-12">
 							<form id="login-form" asp-controller="User" asp-action="Login" method="post" role="form">
 								<div class="form-group">
-									@Html.TextBoxFor(model => model.LoginViewModel.Email, new { @class = "form-control", @placeholder="Email", @type="email"})
+									@Html.TextBoxFor(model => model.LoginViewModel.Email, new { @class = "form-control", @placeholder = "Email", @type = "email" })
 									@Html.ValidationMessageFor(model => model.LoginViewModel.Email, null, new { @class = "text-danger" })
 								</div>
 								<div class="form-group">
-									@Html.TextBoxFor(model => model.LoginViewModel.Password, new { @class = "form-control", @placeholder = "Password", @type = "password"})
+									@Html.TextBoxFor(model => model.LoginViewModel.Password, new { @class = "form-control", @placeholder = "Password", @type = "password" })
 									@Html.ValidationMessageFor(model => model.LoginViewModel.Password, null, new { @class = "text-danger" })
 									@Html.ValidationMessage("InvalidLogin", null, new { @class = "text-danger" })
 								</div>
@@ -42,7 +40,7 @@
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="text-center">
-												<a href="#" class="forgot-password">Forgot Password?</a>
+												<a href="@Url.Action("ForgotPassword")" class="forgot-password">Forgot Password?</a>
 											</div>
 										</div>
 									</div>
@@ -56,11 +54,6 @@
 									@Html.ValidationMessage("ExistentEmail", null, new { @class = "text-danger" })
 								</div>
 								<div class="form-group">
-									@Html.LabelFor(model => model.RegisterViewModel.Password, new { @class = "col-md-3" })
-									@Html.TextBoxFor(model => model.RegisterViewModel.Password, new { @class = "form-control", @type = "password" })
-									@Html.ValidationMessageFor(model => model.RegisterViewModel.Password, null, new { @class = "text-danger" })
-								</div>
-								<div class="form-group">
 									@Html.LabelFor(model => model.RegisterViewModel.Firstname, new { @class = "col-md-3" })
 									@Html.TextBoxFor(model => model.RegisterViewModel.Firstname, new { @class = "form-control" })
 									@Html.ValidationMessageFor(model => model.RegisterViewModel.Firstname, null, new { @class = "text-danger" })
@@ -69,11 +62,6 @@
 									@Html.LabelFor(model => model.RegisterViewModel.Lastname, new { @class = "col-md-3" })
 									@Html.TextBoxFor(model => model.RegisterViewModel.Lastname, new { @class = "form-control" })
 									@Html.ValidationMessageFor(model => model.RegisterViewModel.Lastname, null, new { @class = "text-danger" })
-								</div>
-								<div class="form-group">
-									@Html.LabelFor(model => model.RegisterViewModel.RoleId, new { @class = "col-md-3" })
-									@Html.DropDownListFor(model => model.RegisterViewModel.RoleId, Model.RegisterViewModel.Roles, new { @class = "form-control" })
-									@Html.ValidationMessageFor(model => model.RegisterViewModel.RoleId, null, new { @class = "text-danger" })
 								</div>
 								<div class="form-group">
 									<div class="row">
@@ -90,7 +78,6 @@
 		</div>
 	</div>
 </div>
-
 <script>
 	$(function () {
 		if ('@Model.IsRegisterActive' === "True")
@@ -125,4 +112,3 @@
 		}
 	});
 </script>
-

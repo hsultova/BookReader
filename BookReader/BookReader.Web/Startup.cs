@@ -1,5 +1,6 @@
 ﻿using System;
 using BookReader.Data.Database;
+using BookReader.Data.Helpers;
 using BookReader.Data.Repositories;
 using BookReader.Data.Repositories.Abstract;
 using BookReader.Web.Helpers;
@@ -31,6 +32,8 @@ namespace BookReader.Web
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+
 			services.AddDbContext<BookReaderDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("BookReaderConnection")));
 			services.AddScoped<IUserRepository, UserRepository>();
 			services.AddScoped<IRoleRepository, RoleRepository>();
@@ -38,6 +41,7 @@ namespace BookReader.Web
 			services.AddScoped<IGenreRepository, GenreRepository>();
 			services.AddScoped<IBookRepository, BookRepository>();
 			services.AddScoped<IUserBookRepository, UserBookRepository>();
+			services.AddScoped<IEmailSender, EmailSender>();
 
 			// Add framework services.
 			services.AddMvc();

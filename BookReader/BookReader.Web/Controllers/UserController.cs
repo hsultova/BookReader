@@ -56,7 +56,16 @@ namespace BookReader.Web.Controllers
 					var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 					await HttpContext.Authentication.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
+					if (user.IsFirstTimeLoggedIn)
+					{
+						user.IsFirstTimeLoggedIn = false;
+						_userRepository.Save(user);
+
+						return RedirectToAction("ChangePassword", "User");
+					}
+
 					return RedirectToAction("Index", "Home");
+
 				}
 				else
 				{
@@ -78,9 +87,21 @@ namespace BookReader.Web.Controllers
 			return RedirectToAction("Login", "User");
 		}
 
+		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
+		[HttpGet]
+		public IActionResult Create()
+		{
+			var model = new LoginRegisterViewModel();
+			model.RegisterViewModel = BuildRegisterViewModel();
+
+			return View(model);
+		}
+
 		[HttpPost]
 		public IActionResult Register(LoginRegisterViewModel model)
 		{
+			int userId = UserHelper.GetCurrentUserId(HttpContext);
+
 			if (ModelState.IsValid)
 			{
 				IEnumerable<string> emails = _userRepository.LoadList().Select(u => u.Email);
@@ -93,29 +114,138 @@ namespace BookReader.Web.Controllers
 					var user = new User
 					{
 						Email = model.RegisterViewModel.Email,
-						Password = model.RegisterViewModel.Password,
+						Password = _userRepository.GenerateRandomPassword(),
 						Firstname = model.RegisterViewModel.Firstname,
 						Lastname = model.RegisterViewModel.Lastname,
-						IsFirstTimeLoggedIn = true,
-						RoleId = model.RegisterViewModel.RoleId
+						IsFirstTimeLoggedIn = true
 					};
 
-					_userRepository.Add(user);
-					return RedirectToAction("Index", "Home");
+					if (userId == 0)
+					{
+						user.RoleId = 2; //TODO: Add to const
+						_userRepository.SendPasswordToEmail(user.Email, user.Password);
+						_userRepository.Add(user);
+
+						return RedirectToAction("Index", "Home");
+					}
+					else
+					{
+						user.RoleId = model.RegisterViewModel.RoleId;
+						_userRepository.SendPasswordToEmail(user.Email, user.Password);
+						_userRepository.Add(user);
+
+						return RedirectToAction("Index", "User");
+					}
 				}
 			}
 
 			List<Role> roles = _roleRepository.LoadList().ToList();
 			model.RegisterViewModel.Roles = SelectListHelper.ToSelectListItem<Role>(roles, x => x.Name, x => x.Id.ToString());
 			model.IsRegisterActive = true;
-			return View("Login", model);
+
+			if (userId == 0)
+			{
+				return View("Login", model);
+			}
+			else
+			{
+				return View("Create", model);
+			}
 		}
 
 		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
 		[HttpGet]
-		public IActionResult List()
+		public IActionResult Index()
+		{
+			IList<User> users = _userRepository.LoadList();
+			return View(users);
+		}
+
+		[HttpGet]
+		public IActionResult ForgotPassword()
 		{
 			return View();
+		}
+
+		[HttpPost]
+		public IActionResult ForgotPassword(string email)
+		{
+			User user = _userRepository.LoadList(x => x.Email == email).FirstOrDefault();
+
+			if (user != null)
+			{
+				user.Password = _userRepository.GenerateRandomPassword();
+				_userRepository.SendPasswordToEmail(email, user.Password);
+				_userRepository.Save(user);
+
+				ModelState.AddModelError("SentPassword", "A new password has been sent to your email address.");
+
+				return RedirectToAction("Login");
+			}
+
+			ModelState.AddModelError("NoExistedEmail", "The email address " + email + " is not registered. Please try again.");
+
+			return View("ForgotPassword");
+
+		}
+
+		[HttpGet]
+		public IActionResult ChangePassword()
+		{
+			return View();
+		}
+
+		[HttpPost]
+		public IActionResult ChangePassword(ChangePasswordViewModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				var userId = UserHelper.GetCurrentUserId(HttpContext);
+				User user = _userRepository.Load(userId);
+
+				user.Password = model.Password;
+				_userRepository.Save(user);
+
+				return RedirectToAction("Index", "Home");
+			}
+
+			return View();
+		}
+
+		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
+		[HttpGet]
+		public IActionResult Edit(int id)
+		{
+			User user = _userRepository.Load(id);
+			var model = new UserViewModel
+			{
+				Id = user.Id,
+				Email = user.Email,
+				Firstname = user.Firstname,
+				Lastname = user.Lastname
+			};
+
+			return View(model);
+		}
+
+		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
+		[HttpPost]
+		public IActionResult Edit(UserViewModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				User user = _userRepository.Load(model.Id);
+				user.Email = model.Email;
+				user.Firstname = model.Firstname;
+				user.Lastname = model.Lastname;
+
+				_userRepository.Save(user);
+
+				return RedirectToAction("Index", "User");
+
+			}
+
+			return View(model);
 		}
 
 		private UserViewModel BuildRegisterViewModel()

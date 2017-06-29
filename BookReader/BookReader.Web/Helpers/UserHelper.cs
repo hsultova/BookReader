@@ -9,7 +9,13 @@ namespace BookReader.Web.Helpers
 	{
 		public static Int32 GetCurrentUserId(HttpContext context)
 		{
-			var id = Int32.Parse(context.User.Claims.Where(x => x.Type == ClaimTypes.Sid).First().Value);
+			int id = 0;
+			var claim = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid);
+			if (claim != null)
+			{
+				id = Int32.Parse(claim.Value);
+			}
+
 			return id;
 		}
 

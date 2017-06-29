@@ -6,9 +6,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"] - BookReader</title>
-
 	<link href="~/css/submenu.css" rel="stylesheet" asp-append-version="true" />
-
 	<environment names="Development">
 		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
 		<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -69,6 +67,16 @@
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<b class="caret"></b></a>
 										<ul class="dropdown-menu">
 											<li class="dropdown dropdown-submenu">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown">User</a>
+												<ul class="dropdown-menu">
+													<li><a asp-controller="User" asp-action="Create">Create</a></li>
+													<li><a asp-controller="User" asp-action="Index">List</a></li>
+												</ul>
+												<form style="display: none;" id="logout-form" asp-controller="User" asp-action="Logout" method="post">
+													<button type="submit">Log out</button>
+												</form>
+											</li>
+											<li class="dropdown dropdown-submenu">
 												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Author</a>
 												<ul class="dropdown-menu">
 													<li><a asp-controller="Author" asp-action="Create">Create</a></li>
@@ -100,6 +108,9 @@
 										<li>
 											<a href="#" id="logout-link">Logout</a>
 										</li>
+										<li>
+											<a asp-controller="User" asp-action="ChangePassword">Change password</a>
+										</li>
 									</ul>
 								</li>
 							</ul>
@@ -121,11 +132,9 @@
 			</footer>
 		</div>
 	</div>
-
 	@RenderSection("Scripts", required: false)
 </body>
 </html>
-
 <script>
 	$(document).ready(function () {
 		$('ul.dropdown-menu [data-toggle=dropdown]').on('click', function (event) {

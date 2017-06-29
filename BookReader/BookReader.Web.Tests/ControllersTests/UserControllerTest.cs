@@ -36,7 +36,7 @@ namespace BookReader.Web.Tests.ControllersTests
 		}
 
 		[TestMethod]
-		public void List_ShouldReturnUserList()
+		public void Index_ShouldReturnUserList()
 		{
 			// Arrange
 			var users = new List<User>() {
@@ -60,7 +60,7 @@ namespace BookReader.Web.Tests.ControllersTests
 			var controller = new UserController(_mockUserRepository.Object, _mockRoleRepository.Object);
 
 			// Act
-			var result = controller.List() as ViewResult;
+			var result = controller.Index() as ViewResult;
 
 			// Assert
 			Assert.AreEqual(users, result.Model, "List method should return list of users");

@@ -1,0 +1,34 @@
+﻿@using BookReader.Web.Helpers
+@model IList<BookReader.Data.Models.User>
+
+<h3>Users</h3>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>Firstname</th>
+			<th>Lastname</th>
+			<th>Email</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var user in Model)
+		{
+			<tr>
+				<td>@user.Firstname</td>
+				<td>@user.Lastname</td>
+				<td>@user.Email</td>
+
+				<td>
+					@if (User.IsInRole(BookReaderRoles.Admin))
+					{
+						<a href="@Url.Action("Edit", new { id = user.Id })">Edit</a>
+					}
+				</td>
+			</tr>
+
+			}
+	</tbody>
+
+</table>
+
