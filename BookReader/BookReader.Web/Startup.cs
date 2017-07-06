@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
+using NLog.Web;
 
 namespace BookReader.Web
 {
@@ -25,6 +27,8 @@ namespace BookReader.Web
 				.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
 				.AddEnvironmentVariables();
 			Configuration = builder.Build();
+
+			env.ConfigureNLog("nlog.config");
 		}
 
 		public IConfigurationRoot Configuration { get; }
@@ -57,6 +61,7 @@ namespace BookReader.Web
 		{
 			loggerFactory.AddConsole(Configuration.GetSection("Logging"));
 			loggerFactory.AddDebug();
+			loggerFactory.AddNLog();
 
 			if (env.IsDevelopment())
 			{
