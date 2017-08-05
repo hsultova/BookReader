@@ -46,6 +46,7 @@ namespace BookReader.Web
 			services.AddScoped<IBookRepository, BookRepository>();
 			services.AddScoped<IUserBookRepository, UserBookRepository>();
 			services.AddScoped<IEmailSender, EmailSender>();
+			services.AddScoped<TransactionFilterAttribute, TransactionFilterAttribute>();
 
 			// Add framework services.
 			services.AddMvc();

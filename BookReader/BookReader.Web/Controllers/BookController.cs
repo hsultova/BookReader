@@ -70,6 +70,7 @@ namespace BookReader.Web.Controllers
 			return View(model);
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[Authorize]
 		[HttpPost]
 		public IActionResult Create(BookViewModel model)
@@ -96,6 +97,7 @@ namespace BookReader.Web.Controllers
 			return View(model);
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[Authorize]
 		[HttpPost]
 		public IActionResult CreateUserBook(int authorId, int bookId, int status)
@@ -163,6 +165,7 @@ namespace BookReader.Web.Controllers
 			return View("Index", model);
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[Authorize]
 		[HttpPost]
 		public IActionResult UpdateStatus(int bookId, int status)
@@ -196,6 +199,7 @@ namespace BookReader.Web.Controllers
 			return View(model);
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
 		[HttpPost]
 		public IActionResult Edit(BookViewModel model)
@@ -216,6 +220,7 @@ namespace BookReader.Web.Controllers
 			return View(model);
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
 		[HttpPost]
 		public IActionResult Delete(int id)
@@ -228,6 +233,7 @@ namespace BookReader.Web.Controllers
 		}
 
 		//Remove book from my book list
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[Authorize]
 		[HttpPost]
 		public IActionResult Remove(int id)

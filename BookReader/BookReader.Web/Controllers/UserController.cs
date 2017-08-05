@@ -37,6 +37,7 @@ namespace BookReader.Web.Controllers
 			return View(model);
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginRegisterViewModel model)
 		{
@@ -80,6 +81,7 @@ namespace BookReader.Web.Controllers
 			return View(model);
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[HttpPost]
 		public async Task<IActionResult> Logout()
 		{
@@ -98,6 +100,7 @@ namespace BookReader.Web.Controllers
 			return View(model);
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[HttpPost]
 		public IActionResult Register(LoginRegisterViewModel model)
 		{
@@ -170,6 +173,7 @@ namespace BookReader.Web.Controllers
 			return View();
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[HttpPost]
 		public IActionResult ForgotPassword(string email)
 		{
@@ -232,6 +236,7 @@ namespace BookReader.Web.Controllers
 			return View(model);
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
 		[HttpPost]
 		public IActionResult Edit(UserViewModel model)

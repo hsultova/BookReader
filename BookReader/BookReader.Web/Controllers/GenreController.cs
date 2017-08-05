@@ -32,6 +32,7 @@ namespace BookReader.Web.Controllers
 			return View();
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
 		[HttpPost]
 		public IActionResult Create(GenreViewModel model)
@@ -70,6 +71,7 @@ namespace BookReader.Web.Controllers
 			return View(model);
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
 		[HttpPost]
 		public IActionResult Edit(GenreViewModel model)
@@ -89,6 +91,7 @@ namespace BookReader.Web.Controllers
 			return View(model);
 		}
 
+		[ServiceFilter(typeof(TransactionFilterAttribute))]
 		[Authorize(Policy = BookReaderPolicies.AdminPolicy)]
 		[HttpPost]
 		public IActionResult Delete(int id)
