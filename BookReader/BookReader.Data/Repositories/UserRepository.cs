@@ -1,5 +1,6 @@
 ﻿using System;
 using BookReader.Data.Database;
+using BookReader.Data.Helpers;
 using BookReader.Data.Models;
 using BookReader.Data.Repositories.Abstract;
 
@@ -47,7 +48,8 @@ namespace BookReader.Data.Repositories
 
 		public bool IsValidLogin(string email, string password)
 		{
-			var users = LoadList(u => u.Email.ToUpper() == email.ToUpper() && u.Password == password);
+			var users = LoadList(u => u.Email.ToUpper() == email.ToUpper() && PasswordHasher.VerifyPassword(password, u.Password));
+
 			if (users.Count > 0)
 			{
 				return true;

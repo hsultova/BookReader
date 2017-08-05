@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using BookReader.Data.Helpers;
 
 namespace BookReader.Web.Controllers
 {
@@ -111,10 +112,12 @@ namespace BookReader.Web.Controllers
 				}
 				else
 				{
+					string randomPassword = _userRepository.GenerateRandomPassword();
+
 					var user = new User
 					{
 						Email = model.RegisterViewModel.Email,
-						Password = _userRepository.GenerateRandomPassword(),
+						Password = PasswordHasher.CreatePasswordHash(randomPassword),
 						Firstname = model.RegisterViewModel.Firstname,
 						Lastname = model.RegisterViewModel.Lastname,
 						IsFirstTimeLoggedIn = true
@@ -123,7 +126,7 @@ namespace BookReader.Web.Controllers
 					if (userId == 0)
 					{
 						user.RoleId = 2; //TODO: Add to const
-						_userRepository.SendPasswordToEmail(user.Email, user.Password);
+						_userRepository.SendPasswordToEmail(user.Email, randomPassword);
 						_userRepository.Add(user);
 
 						return RedirectToAction("Index", "Home");
@@ -131,7 +134,7 @@ namespace BookReader.Web.Controllers
 					else
 					{
 						user.RoleId = model.RegisterViewModel.RoleId;
-						_userRepository.SendPasswordToEmail(user.Email, user.Password);
+						_userRepository.SendPasswordToEmail(user.Email, randomPassword);
 						_userRepository.Add(user);
 
 						return RedirectToAction("Index", "User");
@@ -174,8 +177,9 @@ namespace BookReader.Web.Controllers
 
 			if (user != null)
 			{
-				user.Password = _userRepository.GenerateRandomPassword();
-				_userRepository.SendPasswordToEmail(email, user.Password);
+				string randomPassword = _userRepository.GenerateRandomPassword();
+				user.Password = PasswordHasher.CreatePasswordHash(randomPassword);
+				_userRepository.SendPasswordToEmail(email, randomPassword);
 				_userRepository.Save(user);
 
 				ModelState.AddModelError("SentPassword", "A new password has been sent to your email address.");
@@ -203,7 +207,7 @@ namespace BookReader.Web.Controllers
 				var userId = UserHelper.GetCurrentUserId(HttpContext);
 				User user = _userRepository.Load(userId);
 
-				user.Password = model.Password;
+				user.Password = PasswordHasher.CreatePasswordHash(model.Password);
 				_userRepository.Save(user);
 
 				return RedirectToAction("Index", "Home");
